@@ -4,11 +4,39 @@ from pygame import *
 
 
 # классы
-#...
+class GameSprite(sprite.Sprite):
+    def __init__(self, sprite_image, sprite_x, sprite_y, sprite_size, sprite_speed):
+        super().__init__()
+        self.image = transform.scale(image.load(sprite_image), sprite_size)
+        
+        self.rect = self.image.get_rect()
+        self.rect.x = sprite_x
+        self.rect.y = sprite_y
+        
+        self.speed = sprite_speed
+
+    def reset(self):
+        window.blit(self.image, (self.rect.x, self.rect.y))
+
+class Player(GameSprite):
+    def update(self):
+       keys = key.get_pressed()
+       if keys[K_LEFT] and self.rect.x > 0:
+           self.rect.x -= self.speed
+       if keys[K_RIGHT] and self.rect.x < win_width - ship_width:
+           self.rect.x += self.speed
+
+    def shoot(self):
+        print('стреляю')
 
 # константы
 win_height = 500
 win_width = 700
+
+ship_height = 80
+ship_width = 40
+ship_start_x = win_width / 2
+ship_start_y = win_height - ship_height - 5
 
 clock = time.Clock()
 FPS = 60
@@ -16,6 +44,8 @@ FPS = 60
 # картинки
 background_img = 'assets/images/galaxy.jpg'
 background_img = transform.scale(image.load(background_img), (win_width, win_height))
+
+ship_img = 'assets/images/rocket.png'
 
 # звуки
 mixer.init()
@@ -30,7 +60,7 @@ window = display.set_mode((win_width, win_height))
 display.set_caption("Шутер")
 
 # спрайты
-#...
+space_ship = Player(ship_img, ship_start_x, ship_start_y, (ship_width, ship_height), 5)
 
 # игровой цикл
 run = True
@@ -41,9 +71,16 @@ while run:
     for e in event.get():
         if e.type == QUIT:
             run = False
+        elif e.type == KEYDOWN:
+            if e.key == K_SPACE:
+                space_ship.shoot()
 
     if not finish: 
+
+        space_ship.update()
+        
         window.blit(background_img,(0, 0))
+        space_ship.reset()
 
     display.update()
     clock.tick(FPS)
