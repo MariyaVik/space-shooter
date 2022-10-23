@@ -7,25 +7,46 @@ from pygame import *
 #...
 
 # константы
-#...
+win_height = 500
+win_width = 700
+
+clock = time.Clock()
+FPS = 60
 
 # картинки
-#...
+background_img = 'assets/images/galaxy.jpg'
+background_img = transform.scale(image.load(background_img), (win_width, win_height))
 
 # звуки
-#...
+mixer.init()
+mixer.music.load('assets/music/space.ogg')
+mixer.music.play()
 
 # шрифты
 #...
 
 # окно
-#...
+window = display.set_mode((win_width, win_height))
+display.set_caption("Шутер")
 
 # спрайты
 #...
 
 # игровой цикл
-#...
+run = True
+finish = False
+
+while run:
+
+    for e in event.get():
+        if e.type == QUIT:
+            run = False
+
+    if not finish: 
+        window.blit(background_img,(0, 0))
+
+    display.update()
+    clock.tick(FPS)
 
 
 
